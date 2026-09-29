@@ -29,6 +29,7 @@ llm_service = LLMService()
 
 app.include_router(auth.router)
 app.include_router(documents.router)
+app.include_router(quizzes.router) 
 @app.get("/")
 def readSystemRoot():
     """Simple health check endpoint to confirm the server is responsive."""

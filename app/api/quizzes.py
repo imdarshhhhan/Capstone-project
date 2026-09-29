@@ -1,31 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from typing import List
 
-from app.db.sessions  import getDb
-from app.db.models import QuestionPool, QuizAttempt, Assignment
+# Import  foundational connections, databases, and algorithms
+from app.db.sessions import getDb
+from app.db.models import QuestionPool, Assignment
 from app.services.adaptive_engine import AdaptiveEngine
 from app.api.auth import decodeSessionToken
 
+# Import our newly constructed verification schema checkpoints
+from app.schemas.question import RequestQuestionSchema, SubmitAnswerSchema
+from app.schemas.quiz import AssignHomeworkSchema
+
 router = APIRouter(prefix="/quizzes", tags=["Adaptive Assessment & Assignments"])
 
-# ─── DATA SCHEMA STRUCTURES ───
-class RequestQuestionSchema(BaseModel):
-    conceptTag: str
-
-class SubmitAnswerSchema(BaseModel):
-    questionId: int
-    chosenOption: str
-    conceptTag: str
-
-class AssignHomeworkSchema(BaseModel):
-    title: str
-    materialId: int
-    dueDate: str # Format string pattern: YYYY-MM-DD HH:MM:SS
-
-
-# ─── API ROUTE CONTROLLERS (CAMELCASE) ───
+# ─── API ROUTE CONTROLLERS (SECURE CAMELCASE) ───
 
 @router.post("/next-question", status_code=status.HTTP_200_OK)
 def fetchAdaptiveQuestion(
@@ -35,12 +23,12 @@ def fetchAdaptiveQuestion(
 ):
     """
     [FEATURE 4: GENUINE ADAPTIVE ASSESSMENT]
-    Queries the student's mastery tracker logs from PostgreSQL and 
-    extracts the target question whose item difficulty matches their skill level.
+    Queries the student's mastery tracker and extracts the optimal question 
+    whose item difficulty matches their performance level.
     """
     studentId = currentUser.get("userId")
     
-    # Run our camelCase mathematical target sorting routine block
+    # Run your custom human-engineered camelCase mathematical selection algorithm
     adaptiveQuestion = AdaptiveEngine.selectNextAdtvQ(db, studentId, payload.conceptTag)
     
     if not adaptiveQuestion:
@@ -49,7 +37,7 @@ def fetchAdaptiveQuestion(
             detail="Insufficient item variants matching this concept tag inside the question bank."
         )
 
-    # Return the clean question parameters, completely stripping away the correct answer key
+    # Return the clean parameter attributes, completely hiding the correct answer key string
     return {
         "questionId": adaptiveQuestion.id,
         "questionText": adaptiveQuestion.questionText,
@@ -66,12 +54,12 @@ def evaluateStudentSubmission(
 ):
     """
     [FEATURE 5: ITEM ANALYSIS & MASTERY UPDATING]
-    Evaluates student answer accuracy, updates their decimal mastery record, 
-    and recalculates the question's item difficulty parameters.
+    Evaluates student answer accuracy, updates their decimal mastery records,
+    and recalculates the question's item difficulty metrics over time.
     """
     studentId = currentUser.get("userId")
 
-    # 1. Fetch targeted item verification variables
+    # 1. Fetch the targeted item row from PostgreSQL
     targetQuestion = db.query(QuestionPool).filter(QuestionPool.id == payload.questionId).first()
     if not targetQuestion:
         raise HTTPException(
@@ -79,10 +67,10 @@ def evaluateStudentSubmission(
             detail="Targeted assessment item reference not found."
         )
 
-    # 2. Evaluate accuracy string match parameters
+    # 2. Evaluate string accuracy parameters
     isCorrect = targetQuestion.correctAnswer.strip().lower() == payload.chosenOption.strip().lower()
 
-    # 3. Trigger psychometric recalculations using your custom camelCase algorithms
+    # 3. Trigger running psychometric updates using your clean camelCase methods
     newMasteryScore = AdaptiveEngine.updateStudentMastery(
         db, studentId, payload.conceptTag, targetQuestion.difficulty_index_p, isCorrect
     )
