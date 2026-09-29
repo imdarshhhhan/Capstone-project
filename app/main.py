@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from app.db.sessions import engine
 from app.db.models import Base
 
-from app.api import  auth, documents
+from app.api import  auth, documents ,quizzes
 
 from app.services.rag_service import RAGService
 from app.services.llm_service import LLMService

@@ -66,8 +66,6 @@ def decodeSessionToken(token: str = Depends(oauth2Scheme)) -> dict:
         )
 
 
-# ─── API ROUTE CONTROLLERS (CAMELCASE) ───
-
 @router.post("/signup", response_model=TokenResponseSchema, status_code=status.HTTP_201_CREATED)
 def registerNewUser(payload: UserSignupSchema, db: Session = Depends(getDb)):
     """
@@ -86,7 +84,7 @@ def registerNewUser(payload: UserSignupSchema, db: Session = Depends(getDb)):
     newUserRecord = User(
         email=payload.email,
         hashed_password=hashRawPassword(payload.password),
-        full_name=payload.fullName,
+        fullName=payload.fullName,
         role=payload.role
     )
 
@@ -107,7 +105,7 @@ def registerNewUser(payload: UserSignupSchema, db: Session = Depends(getDb)):
         "accessToken": generatedToken,
         "tokenType": "bearer",
         "role": newUserRecord.role.value,
-        "fullName": newUserRecord.full_name
+        "fullName": newUserRecord.fullName
     }
 
 
@@ -138,5 +136,5 @@ def authenticateUser(payload: UserLoginSchema, db: Session = Depends(getDb)):
         "accessToken": generatedToken,
         "tokenType": "bearer",
         "role": userRecord.role.value,
-        "fullName": userRecord.full_name
+        "fullName": userRecord.fullName
     }
