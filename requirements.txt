@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic[email]
+python-multipart
+sqlalchemy
+chromadb
+ollama
+pyjwt
+python-dotenv

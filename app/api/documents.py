@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 # Import our session portal and data models
-from app.db.session import getDb
+from app.db.sessions import getDb
 from app.db.models import ContentMaterial
 from app.services.rag_service import RAGService
 from app.api.auth import decodeSessionToken

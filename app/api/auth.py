@@ -6,7 +6,7 @@ from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
 # Import our foundational PostgreSQL session manager and models
-from app.db.session import getDb # Assuming getDb provides the session generator
+from app.db.sessions import getDb # Assuming getDb provides the session generator
 from app.db.models import User, UserRole
 
 # Core cryptographic settings (To be hidden in config.py later)
