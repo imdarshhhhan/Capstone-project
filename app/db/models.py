@@ -27,17 +27,19 @@ groupMembership = Table(
 class User(Base):
     """
     Tracks application users, hashes, and profiles.
-    Permits clear dashboards splits for teachers vs students.
+    Permits clear dashboard splits for teachers vs students.
     """
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    # ─── NEW CUMULATIVE FEDERATED ACCOUNT BINDING KEY ───
+    firebaseUid = Column(String, unique=True, index=True, nullable=False) 
+    
     email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
     fullName = Column(String, nullable=False)
     role = Column(Enum(UserRole), default=UserRole.STUDENT, nullable=False)
     avatarUrl = Column(String, nullable=True)
-    achievements = Column(JSON, default=list) # Array of unlock tags e.g. ["Streak 5"]
+    achievements = Column(JSON, default=list) 
     createdAt = Column(DateTime, default=datetime.utcnow)
 
     # Relationships

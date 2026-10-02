@@ -27,12 +27,15 @@ rag_service = RAGService()
 llm_service = LLMService()
 
 
-app.include_router(auth.router)
-app.include_router(documents.router)
-app.include_router(quizzes.router) 
+app.include_router(auth_router)
+app.include_router(documents_router)
+app.include_router(quizzes_router)
+
+
+from app.api import auth_router, documents_router, quizzes_router
+
 @app.get("/")
 def readSystemRoot():
-    """Simple health check endpoint to confirm the server is responsive."""
     return {"status": "online", "engine": "FastAPI Core", "database": "Connected"}
 
 # Pydantic schemas to validate raw incoming  data

@@ -1,15 +1,47 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status,router
 from sqlalchemy.orm import Session
 
-# Import  foundational connections, databases, and algorithms
+# Import our foundational connections, databases, and algorithms
 from app.db.sessions import getDb
 from app.db.models import QuestionPool, Assignment
-from app.services.adaptive_engine import AdaptiveEngine
-from app.api.auth import decodeSessionToken
 
-# Import our newly constructed verification schema checkpoints
+# Import our new camelCase mathematical adaptive logic engine
+from app.services.adaptive_engine import AdaptiveEngine
+
+# ─── UPDATE: IMPORT FIREBASE USER VERIFICATION DIRECTLY FROM AUTH ───
+from app.api.auth import verifyAndSyncFirebaseLogin
+
+# Import our schema checkpoints
 from app.schemas.question import RequestQuestionSchema, SubmitAnswerSchema
 from app.schemas.quiz import AssignHomeworkSchema
+
+
+# Change your import line near line 10 to fetch our clean checker function:
+from app.api.auth import verifyFirebaseTokenDependency
+
+# Change your import line near line 10 to fetch our clean checker function:
+from app.api.auth import verifyFirebaseTokenDependency
+
+# Update your route controllers to load the checker as their secure dependency:
+@router.post("/next-question", status_code=status.HTTP_200_OK)
+def fetchAdaptiveQuestion(
+    payload: RequestQuestionSchema,
+    db: Session = Depends(getDb),
+    currentUser: dict = Depends(verifyFirebaseTokenDependency) # <-- Updated right here!
+):
+    studentId = currentUser.get("userId")
+    # ... (Rest of your code stays exactly the same)
+
+
+# Update your route controllers to load the checker as their secure dependency:
+@router.post("/next-question", status_code=status.HTTP_200_OK)
+def fetchAdaptiveQuestion(
+    payload: RequestQuestionSchema,
+    db: Session = Depends(getDb),
+    currentUser: dict = Depends(verifyFirebaseTokenDependency) # <-- Updated right here!
+):
+    studentId = currentUser.get("userId")
+
 
 router = APIRouter(prefix="/quizzes", tags=["Adaptive Assessment & Assignments"])
 
@@ -19,14 +51,16 @@ router = APIRouter(prefix="/quizzes", tags=["Adaptive Assessment & Assignments"]
 def fetchAdaptiveQuestion(
     payload: RequestQuestionSchema,
     db: Session = Depends(getDb),
-    currentUser: dict = Depends(decodeSessionToken)
+    # Secure dependency gate checking the active Firebase session
+    currentFirebaseUser: dict = Depends(verifyAndSyncFirebaseLogin)
 ):
     """
     [FEATURE 4: GENUINE ADAPTIVE ASSESSMENT]
     Queries the student's mastery tracker and extracts the optimal question 
-    whose item difficulty matches their performance level.
+    whose item difficulty matches their skill level.
     """
-    studentId = currentUser.get("userId")
+    # Look up the custom synchronized profile row ID from your database map
+    studentId = currentFirebaseUser.get("userId") if currentFirebaseUser else 1
     
     # Run your custom human-engineered camelCase mathematical selection algorithm
     adaptiveQuestion = AdaptiveEngine.selectNextAdtvQ(db, studentId, payload.conceptTag)
@@ -37,7 +71,6 @@ def fetchAdaptiveQuestion(
             detail="Insufficient item variants matching this concept tag inside the question bank."
         )
 
-    # Return the clean parameter attributes, completely hiding the correct answer key string
     return {
         "questionId": adaptiveQuestion.id,
         "questionText": adaptiveQuestion.questionText,
@@ -50,14 +83,14 @@ def fetchAdaptiveQuestion(
 def evaluateStudentSubmission(
     payload: SubmitAnswerSchema,
     db: Session = Depends(getDb),
-    currentUser: dict = Depends(decodeSessionToken)
+    currentFirebaseUser: dict = Depends(verifyAndSyncFirebaseLogin)
 ):
     """
     [FEATURE 5: ITEM ANALYSIS & MASTERY UPDATING]
     Evaluates student answer accuracy, updates their decimal mastery records,
     and recalculates the question's item difficulty metrics over time.
     """
-    studentId = currentUser.get("userId")
+    studentId = currentFirebaseUser.get("userId") if currentFirebaseUser else 1
 
     # 1. Fetch the targeted item row from PostgreSQL
     targetQuestion = db.query(QuestionPool).filter(QuestionPool.id == payload.questionId).first()
@@ -92,13 +125,14 @@ def evaluateStudentSubmission(
 def assignHomeworkActivity(
     payload: AssignHomeworkSchema,
     db: Session = Depends(getDb),
-    currentUser: dict = Depends(decodeSessionToken)
+    # ─── THE FIXED LINE IS RIGHT HERE ───
+    currentFirebaseUser: dict = Depends(verifyAndSyncFirebaseLogin) 
 ):
     """
     [FEATURE - TEACHER: ASSIGN AN ACTIVITY / HOMEWORK]
     Links a lesson material item to a due date window constraint.
     """
-    if currentUser.get("role") != "teacher":
+    if currentFirebaseUser.get("role") != "teacher":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access Denied: This operation requires teacher account permissions."
@@ -107,7 +141,7 @@ def assignHomeworkActivity(
     newAssignment = Assignment(
         title=payload.title,
         materialId=payload.materialId,
-        teacherId=currentUser.get("userId"),
+        teacherId=currentFirebaseUser.get("userId") if currentFirebaseUser else 1,
         dueDate=payload.dueDate
     )
     

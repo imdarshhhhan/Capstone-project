@@ -7,3 +7,4 @@ chromadb
 ollama
 pyjwt
 python-dotenv
+firebase-admin

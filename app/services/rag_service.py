@@ -8,10 +8,6 @@ class RAGService:
         self.collection = self.chroma_client.get_or_create_collection(name=collection_name)
 
     def add_document_content(self, text: str):
-        """
-        Breaks down raw strings into small, manageable context paragraphs
-        and saves their mathematical embeddings inside ChromaDB.
-        """
         chunks = []
         chunk_size = 500
         overlap = 50
