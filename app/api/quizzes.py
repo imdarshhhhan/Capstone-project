@@ -1,26 +1,29 @@
-from fastapi import APIRouter, Depends, HTTPException, status,router
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 # Import our foundational connections, databases, and algorithms
-from app.db.sessions import getDb
-from app.db.models import QuestionPool, Assignment
+from  db.sessions import getDb
+from  db.models import QuestionPool, Assignment
 
 # Import our new camelCase mathematical adaptive logic engine
-from app.services.adaptive_engine import AdaptiveEngine
+from  services.adaptive_engine import AdaptiveEngine
 
 # ─── UPDATE: IMPORT FIREBASE USER VERIFICATION DIRECTLY FROM AUTH ───
-from app.api.auth import verifyAndSyncFirebaseLogin
+from  api.auth import verifyFirebaseTokenDependency
 
 # Import our schema checkpoints
-from app.schemas.question import RequestQuestionSchema, SubmitAnswerSchema
-from app.schemas.quiz import AssignHomeworkSchema
+from  schemas.question import RequestQuestionSchema, SubmitAnswerSchema
+from  schemas.quiz import AssignHomeworkSchema
 
 
 # Change your import line near line 10 to fetch our clean checker function:
-from app.api.auth import verifyFirebaseTokenDependency
+from  api.auth import verifyFirebaseTokenDependency
 
 # Change your import line near line 10 to fetch our clean checker function:
-from app.api.auth import verifyFirebaseTokenDependency
+from  api.auth import verifyFirebaseTokenDependency
+
+
+router = APIRouter(prefix="/quizzes", tags=["Adaptive Assessment & Assignments"])
 
 # Update your route controllers to load the checker as their secure dependency:
 @router.post("/next-question", status_code=status.HTTP_200_OK)
@@ -43,16 +46,12 @@ def fetchAdaptiveQuestion(
     studentId = currentUser.get("userId")
 
 
-router = APIRouter(prefix="/quizzes", tags=["Adaptive Assessment & Assignments"])
-
-# ─── API ROUTE CONTROLLERS (SECURE CAMELCASE) ───
-
 @router.post("/next-question", status_code=status.HTTP_200_OK)
 def fetchAdaptiveQuestion(
     payload: RequestQuestionSchema,
     db: Session = Depends(getDb),
     # Secure dependency gate checking the active Firebase session
-    currentFirebaseUser: dict = Depends(verifyAndSyncFirebaseLogin)
+    currentFirebaseUser: dict = Depends(verifyFirebaseTokenDependency)
 ):
     """
     [FEATURE 4: GENUINE ADAPTIVE ASSESSMENT]
@@ -83,7 +82,7 @@ def fetchAdaptiveQuestion(
 def evaluateStudentSubmission(
     payload: SubmitAnswerSchema,
     db: Session = Depends(getDb),
-    currentFirebaseUser: dict = Depends(verifyAndSyncFirebaseLogin)
+    currentFirebaseUser: dict = Depends(verifyFirebaseTokenDependency)
 ):
     """
     [FEATURE 5: ITEM ANALYSIS & MASTERY UPDATING]
@@ -126,7 +125,7 @@ def assignHomeworkActivity(
     payload: AssignHomeworkSchema,
     db: Session = Depends(getDb),
     # ─── THE FIXED LINE IS RIGHT HERE ───
-    currentFirebaseUser: dict = Depends(verifyAndSyncFirebaseLogin) 
+    currentFirebaseUser: dict = Depends(verifyFirebaseTokenDependency) 
 ):
     """
     [FEATURE - TEACHER: ASSIGN AN ACTIVITY / HOMEWORK]

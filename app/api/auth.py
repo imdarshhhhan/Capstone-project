@@ -2,14 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
 from fastapi.security import OAuth2PasswordBearer
-from app.db.sessions import getDb
+from  db.sessions import getDb
 
 # ─── CORRECT LAYOUT: PULL FIREBASE DIRECTLY FROM ITS OFFICIAL LIBRARY ───
 import firebase_admin
 from firebase_admin import credentials, auth as firebaseAuth
 
 # Pull only the hidden environment variables from your app config settings
-from app.config import settings
+from  config import settings
 
 
 from fastapi.security import OAuth2PasswordBearer

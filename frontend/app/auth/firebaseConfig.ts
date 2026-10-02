@@ -1,5 +1,5 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, getApps } from "firebase/app";
+import { initializeApp, getApps ,getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -7,7 +7,7 @@ import { getAnalytics } from "firebase/analytics";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "",
+  apiKey: "AIzaSyDYUYVDj8UTfbtniyXgnAg466tNQMFc_Gg",
   authDomain: "adaptive-quiz-platform-29238.firebaseapp.com",
   projectId: "adaptive-quiz-platform-29238",
   storageBucket: "adaptive-quiz-platform-29238.firebasestorage.app",
@@ -17,7 +17,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const appInstance = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps();
+const appInstance =
+    getApps().length === 0
+        ? initializeApp(firebaseConfig)
+        : getApp();
 
-// EXPLICIT EXPORT: This is the exact variable name AuthCard is looking for!
 export const firebaseAuthService = getAuth(appInstance);

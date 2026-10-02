@@ -1,14 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from app.db.sessions import engine
-from app.db.models import Base
+from  db.sessions import engine
+from  db.models import Base
 
-from app.api import  auth, documents ,quizzes
+from  api import auth_router, documents_router, quizzes_router
 
-from app.services.rag_service import RAGService
-from app.services.llm_service import LLMService
-from app.services.validator import QuestionValidator
+from  services.rag_service import RAGService
+from  services.llm_service import LLMService
+from  services.validator import QuestionValidator
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="AI Adaptive Quiz API")
@@ -31,8 +31,6 @@ app.include_router(auth_router)
 app.include_router(documents_router)
 app.include_router(quizzes_router)
 
-
-from app.api import auth_router, documents_router, quizzes_router
 
 @app.get("/")
 def readSystemRoot():

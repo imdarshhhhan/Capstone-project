@@ -3,7 +3,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from app.db.models import StudentMastery, QuestionPool, QuizAttempt
+from  db.models import StudentMastery, QuestionPool, QuizAttempt
 
 
 class AdaptiveEngine:
