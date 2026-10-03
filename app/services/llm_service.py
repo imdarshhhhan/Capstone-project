@@ -8,7 +8,6 @@ class LLMService:
     def generate_mcq(self, context: str, topic: str) -> dict:
 #Asking the context based Mcq questions by giving the strict prompt and loading it into json format 
 
-#service layer created to separate from backend logic from ai service logic
         system_instructions = (
             "You are an objective academic assessment engine. Read the context snippet provided "
             "and generate exactly ONE multiple-choice question. You must obey these rules:\n"

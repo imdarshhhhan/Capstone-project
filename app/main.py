@@ -16,7 +16,7 @@ migrate_firebase_auth_schema(engine)
 
 app = FastAPI(title="AI Adaptive Quiz API")
 
-# Configure CORS so frontend can make secure fetch requests
+# Configuration of CORS with frontend to make secure fetch requests
 app.add_middleware(
     CORSMiddleware, #allowing the req coming from frontend
     allow_origins=settings.FRONTEND_ORIGINS,
@@ -25,7 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Instantiate service objects
 rag_service = RAGService()
 llm_service = LLMService()
 
@@ -61,7 +60,7 @@ def ingest_document(payload: DocumentPayload):
 
 @app.post("/generate-quiz")
 def generate_quiz_question(payload: GenerationPayload):
-    """Endpoint to trigger source-grounded question creation."""
+    #source grounded generation
     #  Look up the vector data matching the student's request
     context, is_grounded = rag_service.retrieve_grounded_context(payload.topic)
     
@@ -78,7 +77,7 @@ def generate_quiz_question(payload: GenerationPayload):
             detail="Source-Grounded Abort: Uploaded notes do not contain sufficient content on this topic."
         )
         
-    #  Generate the final structured assessment choice
+    # Generating the final structured assessment choice
     quiz_question = llm_service.generate_mcq(
                         context,
                         payload.topic

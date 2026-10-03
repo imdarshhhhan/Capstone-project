@@ -10,11 +10,10 @@ class UserRole(str, enum.Enum):
     STUDENT = "student"
 
 class NotificationType(str, enum.Enum):
-    SUBMISSION = "submission"     # Student finished an assignment
-    ASSIGNMENT = "assignment"     # Teacher assigned a quiz
-    GROUP_INVITE = "group_invite" # Joined a study group
+    SUBMISSION = "submission"     
+    ASSIGNMENT = "assignment"     
+    GROUP_INVITE = "group_invite" 
 
-# many-to-many bridge linking students to study groups
 groupMembership = Table(
     "group_membership",
     Base.metadata,
@@ -25,10 +24,7 @@ groupMembership = Table(
 
 
 class User(Base):
-    """
-    Tracks application users, hashes, and profiles.
-    Permits clear dashboard splits for teachers vs students.
-    """
+
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -53,7 +49,7 @@ class User(Base):
 
 
 class Folder(Base):
-    """Subject-wise or exam-wise containers managed by students."""
+    #Subject-wise or exam-wise containers managed by students."""
     __tablename__ = "folders"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -67,7 +63,7 @@ class Folder(Base):
 
 
 class ContentMaterial(Base):
-    """Saves texts uploaded or compiled by instructors for RAG generations."""
+    #Saves texts uploaded or compiled by instructors for RAG generations
     __tablename__ = "content_materials"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -81,10 +77,7 @@ class ContentMaterial(Base):
 
 
 class QuestionPool(Base):
-    """
-    Main bank storing your verified questions. Holds validation status flags,
-    Bloom's ratings, and running psychometric counts.
-    """
+
     __tablename__ = "question_pool"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -96,11 +89,11 @@ class QuestionPool(Base):
     correctAnswer = Column(String, nullable=False)
     sourceQuote = Column(String, nullable=False)
     
-    # Validation gates flags (Feature 2)
+    # Validation gates flags
     isApprovedAutomatically = Column(Boolean, default=True)
     validationWarnings = Column(JSON, default=list)
     
-    # Psychometrics (Feature 5)
+    # Psychometrics 
     totalAttemptsLogged = Column(Integer, default=0)
     correctAttemptsLogged = Column(Integer, default=0)
     difficulty_index_p = Column(Float, default=1.0) # Correct / Total ratio
@@ -109,7 +102,6 @@ class QuestionPool(Base):
 
 
 class Assignment(Base):
-    """Activity mappings created by teachers tied to specific windows."""
     __tablename__ = "assignments"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -124,7 +116,6 @@ class Assignment(Base):
 
 
 class QuizAttempt(Base):
-    """Logs individual assessment submissions along with context feedback."""
     __tablename__ = "quiz_attempts"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -141,7 +132,6 @@ class QuizAttempt(Base):
 
 
 class SavedQuiz(Base):
-    """Saves links to quiz reviews bookmarked in specific student folders."""
     __tablename__ = "saved_quizzes"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -154,7 +144,6 @@ class SavedQuiz(Base):
 
 
 class StudyGroup(Base):
-    """Collaborative student group workspaces initialized via unique join codes."""
     __tablename__ = "study_groups"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -168,7 +157,6 @@ class StudyGroup(Base):
 
 
 class StudentMastery(Base):
-    """Maintains a decimal mastery competency track per student per concept."""
     __tablename__ = "student_mastery"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -181,7 +169,6 @@ class StudentMastery(Base):
 
 
 class Notification(Base):
-    """Dispatches tracking indicators like submissions or homework announcements."""
     __tablename__ = "notifications"
 
     id = Column(Integer, primary_key=True, index=True)

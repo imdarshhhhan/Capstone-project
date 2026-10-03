@@ -14,18 +14,16 @@ class AdaptiveEngine:
         question_difficulty: float,
         is_correct: bool
     ) -> float:
+        
+        #Calculate the student's new mastery score based on their answer.
+
+        """The score  between 0.0 and 1.0. A correct answer increases
+        mastery, if an incorrect answer :  decreases it.
         """
-        Calculate the student's new mastery score based on their answer.
 
-        The score stays between 0.0 and 1.0. A correct answer increases
-        mastery, while an incorrect answer decreases it.
-        """
+        alpha = 0.15  # it Controls how quickly the mastery score changes.
 
-        # Controls how quickly the mastery score changes.
-        alpha = 0.15
-
-        # Convert the P-value into a difficulty value.
-        actual_difficulty = 1.0 - question_difficulty
+        actual_difficulty = 1.0 - question_difficulty  # Convert the P-value into a difficulty value.
 
         if is_correct:
             # Correct answers increase mastery.
@@ -49,7 +47,7 @@ class AdaptiveEngine:
 
             new_mastery = current_mastery - decay_factor
 
-        # Keep the score between 0.0 and 1.0.
+        # Keeping the score between 0.0 and 1.0.
         return max(0.0, min(1.0, new_mastery))
 
 
@@ -61,19 +59,14 @@ class AdaptiveEngine:
         question_difficulty: float,
         is_correct: bool
     ) -> float:
-        """
-        Find or create the student's mastery record for a concept,
-        update the score, and save it to the database.
-        """
 
-        # Find the student's existing mastery record for this concept.
+        # Finding the student's existing mastery record for this concept.
         mastery_record = db.query(StudentMastery).filter(
             StudentMastery.student_id == student_id,
             StudentMastery.concept_tag == concept_tag
         ).first()
 
         # Create a new record if the student has not attempted this
-        # concept before.
         if not mastery_record:
             mastery_record = StudentMastery(
                 student_id=student_id,
@@ -84,7 +77,7 @@ class AdaptiveEngine:
             db.add(mastery_record)
             db.flush()
 
-        # Calculate the new mastery score.
+        # Calculating the new mastery score.
         updated_score = AdaptiveEngine.calculateMastery(
             current_mastery=mastery_record.mastery_score,
             question_difficulty=question_difficulty,
@@ -106,18 +99,16 @@ class AdaptiveEngine:
         student_id: int,
         concept_tag: str
     ) -> QuestionPool:
-        """
-        Select a question whose difficulty is close to the student's
-        current mastery level for the given concept.
-        """
+        
+        #Selecting the  question ac to difficulty 
 
-        # Get the student's current mastery for this concept.
+        # Getting the student's current mastery for this concept.
         mastery_record = db.query(StudentMastery).filter(
             StudentMastery.student_id == student_id,
             StudentMastery.concept_tag == concept_tag
         ).first()
 
-        # Start at 0.5 if no mastery record exists yet.
+        # default mastery score : 0.5
         student_competence = (
             mastery_record.mastery_score
             if mastery_record
@@ -156,11 +147,10 @@ class AdaptiveEngine:
         question_id: int,
         is_correct: bool
     ) -> float:
-        """
-        Update a question's difficulty value based on student attempts.
+        #Update a question's difficulty value based on student attempts.
 
-        P-value = number of correct answers / total attempts.
-        """
+        
+        #P-value = number of correct answers / total attempts.
 
         # Find the question.
         question = db.query(QuestionPool).filter(
@@ -170,10 +160,8 @@ class AdaptiveEngine:
         if not question:
             return 1.0
 
-        # Record another attempt.
         question.total_attempts_logged += 1
 
-        # Record the correct answer if applicable.
         if is_correct:
             question.correct_attempts_logged += 1
 

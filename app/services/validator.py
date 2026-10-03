@@ -3,14 +3,10 @@ class QuestionValidator:
 
     @staticmethod
     def validate_mcq_structure(quiz_data: dict) -> tuple[bool, list[str]]:
-        """
-        Checks whether the generated MCQ has the required fields,
-        four valid options, and a valid correct answer.
-        """
-
+        #validation of questions
         errors = []
 
-        # Check that all required fields are present
+        # Checking that all required fields are present
         required_fields = [
             "question",
             "options",
@@ -28,13 +24,12 @@ class QuestionValidator:
         correct_answer = quiz_data["correct_answer"]
         source_quote = quiz_data["source_quote"]
 
-        # An MCQ should have exactly 4 options
         if len(options) != 4:
             errors.append(
                 f"Expected 4 options, but got {len(options)}"
             )
 
-        # Check for duplicate options
+        # Checking for duplicate options
         normalized_options = {
             option.strip().lower()
             for option in options
@@ -44,13 +39,12 @@ class QuestionValidator:
         if len(normalized_options) != len(options):
             errors.append("Duplicate options found")
 
-        # The correct answer should be one of the given options
         if correct_answer not in options:
             errors.append(
                 f"Correct answer '{correct_answer}' is not in the options"
             )
 
-        # Avoid common weak MCQ choices
+        # Avoiding common weak MCQ choices
         weak_options = {
             "all of the above",
             "none of the above",

@@ -8,35 +8,19 @@ from  db.models import QuestionPool, Assignment
 # adaptive engine
 from  services.adaptive_engine import AdaptiveEngine
 
-# ─── UPDATE: IMPORT FIREBASE USER VERIFICATION DIRECTLY FROM AUTH ───
 from  api.auth import verifyFirebaseTokenDependency
 
-# Import our schema checkpoints
+# chema checkpoints
 from  schemas.question import RequestQuestionSchema, SubmitAnswerSchema
 from  schemas.quiz import AssignHomeworkSchema
 
-
-# Change your import line near line 10 to fetch our clean checker function:
 from  api.auth import verifyFirebaseTokenDependency
 
-# Change your import line near line 10 to fetch our clean checker function:
 from  api.auth import verifyFirebaseTokenDependency
 
 
 router = APIRouter(prefix="/quizzes", tags=["Adaptive Assessment & Assignments"])
 
-# Update your route controllers to load the checker as their secure dependency:
-@router.post("/next-question", status_code=status.HTTP_200_OK)
-def fetchAdaptiveQuestion(
-    payload: RequestQuestionSchema,
-    db: Session = Depends(getDb),
-    currentUser: dict = Depends(verifyFirebaseTokenDependency) # <-- Updated right here!
-):
-    studentId = currentUser.get("userId")
-    # ... (Rest of your code stays exactly the same)
-
-
-# Update your route controllers to load the checker as their secure dependency:
 @router.post("/next-question", status_code=status.HTTP_200_OK)
 def fetchAdaptiveQuestion(
     payload: RequestQuestionSchema,
@@ -50,18 +34,21 @@ def fetchAdaptiveQuestion(
 def fetchAdaptiveQuestion(
     payload: RequestQuestionSchema,
     db: Session = Depends(getDb),
-    # Secure dependency gate checking the active Firebase session
+    currentUser: dict = Depends(verifyFirebaseTokenDependency)
+):
+    studentId = currentUser.get("userId")
+
+
+@router.post("/next-question", status_code=status.HTTP_200_OK)
+def fetchAdaptiveQuestion(
+    payload: RequestQuestionSchema,
+    db: Session = Depends(getDb),
     currentFirebaseUser: dict = Depends(verifyFirebaseTokenDependency)
 ):
-    """
-    [FEATURE 4: GENUINE ADAPTIVE ASSESSMENT]
-    Queries the student's mastery tracker and extracts the optimal question 
-    whose item difficulty matches their skill level.
-    """
-    # Look up the custom synchronized profile row ID from your database map
+    #feature 4  : Adaptive engine
     studentId = currentFirebaseUser.get("userId") if currentFirebaseUser else 1
     
-    # Run your custom human-engineered camelCase mathematical selection algorithm
+    # item response theory 
     adaptiveQuestion = AdaptiveEngine.selectNextAdtvQ(db, studentId, payload.conceptTag)
     
     if not adaptiveQuestion:
@@ -84,25 +71,17 @@ def evaluateStudentSubmission(
     db: Session = Depends(getDb),
     currentFirebaseUser: dict = Depends(verifyFirebaseTokenDependency)
 ):
-    """
-    [FEATURE 5: ITEM ANALYSIS & MASTERY UPDATING]
-    Evaluates student answer accuracy, updates their decimal mastery records,
-    and recalculates the question's item difficulty metrics over time.
-    """
     studentId = currentFirebaseUser.get("userId") if currentFirebaseUser else 1
 
-    # 1. Fetch the targeted item row from PostgreSQL
+    # fetching row from PostgreSQL
     targetQuestion = db.query(QuestionPool).filter(QuestionPool.id == payload.questionId).first()
     if not targetQuestion:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Targeted assessment item reference not found."
         )
-
-    # 2. Evaluate string accuracy parameters
     isCorrect = targetQuestion.correctAnswer.strip().lower() == payload.chosenOption.strip().lower()
 
-    # 3. Trigger running psychometric updates using your clean camelCase methods
     newMasteryScore = AdaptiveEngine.updateStudentMastery(
         db, studentId, payload.conceptTag, targetQuestion.difficulty_index_p, isCorrect
     )
@@ -124,7 +103,6 @@ def evaluateStudentSubmission(
 def assignHomeworkActivity(
     payload: AssignHomeworkSchema,
     db: Session = Depends(getDb),
-    # ─── THE FIXED LINE IS RIGHT HERE ───
     currentFirebaseUser: dict = Depends(verifyFirebaseTokenDependency) 
 ):
     """

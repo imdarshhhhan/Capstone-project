@@ -2,7 +2,7 @@ import chromadb
 
 class RAGService:
     def __init__(self, collection_name="quiz_bank"):
-# We store vectors locally in a folder inside our project, this is persistent storage that is
+# storing vectors locally in a folder inside our project, this is persistent storage that is
 # even if the application is off , data is kept in the ram
         self.chroma_client = chromadb.PersistentClient(path="./chroma_storage")
         self.collection = self.chroma_client.get_or_create_collection(name=collection_name)
