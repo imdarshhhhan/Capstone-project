@@ -10,10 +10,8 @@ import {
   GoogleAuthProvider 
 } from "firebase/auth";
 
-// Import our configuration service manager
 import { firebaseAuthService } from "./firebaseConfig";
 
-// Import our refactored secure endpoint sync handlers
 import {
   syncFirebaseLoginWithBackend,
   syncFirebaseSignupWithBackend,
@@ -46,15 +44,11 @@ export default function AuthCard() {
     return error instanceof Error ? error.message : fallback;
   };
 
-  /**
-   * Spawns a secure Firebase pop-up modal allowing users to log in using 
-   * their authenticated Google profiles, and hooks into our backend database syncing rules.
-   */
+
   const handleGoogleLogin = async () => {
     setLoading(true);
     setErrorMsg("");
     
-    // Initialize the Google credentials provider matrix wrapper
     const provider = new GoogleAuthProvider();
 
     try {
@@ -62,7 +56,6 @@ export default function AuthCard() {
       const uniqueIdToken = await userCredential.user.getIdToken();
 
       if (isLogin) {
-        // --- GOOGLE LOGIN SYNC PATHWAY ---
         const backendSync = await syncFirebaseLoginWithBackend(uniqueIdToken);
         localStorage.setItem("userToken", uniqueIdToken);
         localStorage.setItem("userRole", backendSync.role);
@@ -73,8 +66,7 @@ export default function AuthCard() {
           router.push("/");
         }
       } else {
-        // --- GOOGLE SIGNUP SYNC PATHWAY ---
-        // For Google popups, extract the display name directly if full name is empty
+
         const userDisplayName = fullName || userCredential.user.displayName || "Google User";
         
         const backendSync = await syncFirebaseSignupWithBackend({
@@ -218,10 +210,10 @@ export default function AuthCard() {
         </button>
       </form>
 
-      {/* ─── VISUAL SEPARATOR LINE DIVIDER ─── */}
+      {}
       <div className="divider">or</div>
 
-      {/* ─── GOOGLE CALL TO ACTION REGISTRATION ROW BUTTON ─── */}
+      {}
       <button 
         type="button" 
         disabled={loading} 

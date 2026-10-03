@@ -7,7 +7,6 @@ import { signOut } from "firebase/auth";
 import { firebaseAuthService } from "@/app/auth/firebaseConfig";
 import type { SyncedUser } from "@/services/api";
 
-/** Page frame: top bar with the user's name, role and a sign-out button. */
 export function DashboardShell({
   title,
   user,

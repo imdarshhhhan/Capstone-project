@@ -5,14 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { ApiError } from "@/services/dashboardApi";
 
-/**
- * Loads a dashboard from the backend and handles the common failure cases:
- *  - 401 (signed out / token rejected)  -> go to /auth
- *  - 403 (wrong role for this page)     -> go to `wrongRoleRedirect`
- *
- * `fetcher` must be a stable function (e.g. imported from services/dashboardApi).
- * `reload()` refreshes the data silently after the user changes something.
- */
+
 export function useDashboard<T>(fetcher: () => Promise<T>, wrongRoleRedirect: string) {
   const router = useRouter();
   const [data, setData] = useState<T | null>(null);
