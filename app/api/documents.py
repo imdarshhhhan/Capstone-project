@@ -16,8 +16,6 @@ router = APIRouter(
 
 ragService = RAGService()
 
-
-
 class UploadMaterialSchema(BaseModel):
     title: str
     textBody: str
@@ -28,16 +26,15 @@ def processTeacherDocument(
     db: Session = Depends(getDb),
     currentFirebaseUser: dict = Depends(verifyFirebaseTokenDependency)
 ):
-    """
-    Creates a teacher content record in PostgreSQL
-    and indexes its text content into ChromaDB.
-    """
+    
+    #Creates a teacher content record in PostgreSQL and indexes its text content into ChromaDB.
+  
 
-    # 1. Check Firebase-synchronized user role
+    #  Check Firebase-synchronized user role
     if currentFirebaseUser.get("role") != "teacher":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access denied. Teacher permissions required."
+            detail="Access denied. You don't have access to this feature"
         )
 
     # 2. Get the teacher's database ID

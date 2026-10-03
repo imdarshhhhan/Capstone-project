@@ -5,7 +5,7 @@ from  db.sessions import engine
 from  db.models import Base
 from db.migrations import migrate_firebase_auth_schema
 
-from  api import auth_router, documents_router, quizzes_router
+from  api import auth_router, documents_router, quizzes_router,dashboard_router
 from config import settings
 
 from  services.rag_service import RAGService
@@ -33,6 +33,8 @@ llm_service = LLMService()
 app.include_router(auth_router)
 app.include_router(documents_router)
 app.include_router(quizzes_router)
+app.include_router(dashboard_router)  
+
 
 
 @app.get("/")

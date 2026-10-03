@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-# Import our foundational connections, databases, and algorithms
+#db functions
 from  db.sessions import getDb
 from  db.models import QuestionPool, Assignment
 
-# Import our new camelCase mathematical adaptive logic engine
+# adaptive engine
 from  services.adaptive_engine import AdaptiveEngine
 
 # ─── UPDATE: IMPORT FIREBASE USER VERIFICATION DIRECTLY FROM AUTH ───
