@@ -32,8 +32,7 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    # ─── NEW CUMULATIVE FEDERATED ACCOUNT BINDING KEY ───
-    firebaseUid = Column(String, unique=True, index=True, nullable=False) 
+    firebaseUid = Column(String, unique=True, index=True, nullable=True)
     
     email = Column(String, unique=True, index=True, nullable=False)
     fullName = Column(String, nullable=False)

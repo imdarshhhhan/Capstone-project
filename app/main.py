@@ -3,20 +3,23 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from  db.sessions import engine
 from  db.models import Base
+from db.migrations import migrate_firebase_auth_schema
 
 from  api import auth_router, documents_router, quizzes_router
+from config import settings
 
 from  services.rag_service import RAGService
 from  services.llm_service import LLMService
 from  services.validator import QuestionValidator
 Base.metadata.create_all(bind=engine)
+migrate_firebase_auth_schema(engine)
 
 app = FastAPI(title="AI Adaptive Quiz API")
 
 # Configure CORS so frontend can make secure fetch requests
 app.add_middleware(
     CORSMiddleware, #allowing the req coming from frontend
-    allow_origins=["http://localhost:3000"],
+    allow_origins=settings.FRONTEND_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
