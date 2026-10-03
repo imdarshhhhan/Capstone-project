@@ -1,24 +1,31 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeApp, getApps ,getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getAnalytics } from "firebase/analytics";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDYUYVDj8UTfbtniyXgnAg466tNQMFc_Gg",
-  authDomain: "adaptive-quiz-platform-29238.firebaseapp.com",
-  projectId: "adaptive-quiz-platform-29238",
-  storageBucket: "adaptive-quiz-platform-29238.firebasestorage.app",
-  messagingSenderId: "249876386382",
-  appId: "1:249876386382:web:3a7dc18dcdc60d7887291f",
-  measurementId: "G-G7F3THPL9N"
-};
+<<<reference types="vite/client" />
+
+
+interface ImportMetaEnv {
+  readonly VITE_FIREBASE_API_KEY: string;
+  readonly VITE_FIREBASE_AUTH_DOMAIN: string;
+  readonly VITE_FIREBASE_PROJECT_ID: string;
+  readonly VITE_FIREBASE_STORAGE_BUCKET: string;
+  readonly VITE_FIREBASE_MESSAGING_SENDER_ID: string;
+  readonly VITE_FIREBASE_APP_ID: string;
+  readonly VITE_FIREBASE_MEASUREMENT_ID: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 
 // Initialize Firebase
 const appInstance =
-  getApps().length === 0
-    ? initializeApp(firebaseConfig)
-    : getApp();
+    getApps().length === 0
+        ? initializeApp(firebaseConfig)
+        : getApp();
 
 export const firebaseAuthService = getAuth(appInstance);
