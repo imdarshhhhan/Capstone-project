@@ -16,6 +16,14 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Backend connection
+
+Start FastAPI from the repository's `app` directory with `python -m uvicorn main:app --reload`. The frontend uses `http://127.0.0.1:8000` by default; set `NEXT_PUBLIC_BACKEND_URL` in `frontend/.env.local` if the backend is hosted elsewhere.
+
+FastAPI allows `http://localhost:3000`, `http://127.0.0.1:3000`, and `http://[::1]:3000` by default. If the frontend runs at another origin, set `FRONTEND_ORIGINS` in the backend environment to a comma-separated list of exact origins (for example, `http://localhost:3001`), then restart FastAPI.
+
+On startup, FastAPI applies the Firebase-auth schema migration to an existing `users` table. Legacy accounts are linked to Firebase only when the Firebase token confirms the account email is verified.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
