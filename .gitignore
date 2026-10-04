@@ -4,3 +4,4 @@ chroma_storage/
 .env
 .venv/
 venv/
+.md
