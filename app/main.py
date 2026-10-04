@@ -89,3 +89,19 @@ def generate_quiz_question(payload: GenerationPayload):
     quiz_question["is_approved_automatically"] = is_valid
     quiz_question["validation_warnings"] = validation_flags
     return quiz_question
+
+
+@app.post("/create-test")
+def create_test(payload: GenerationPayload):
+    #topuc input and getting the results
+    topic = payload.topic.strip()
+    if not topic:
+        raise HTTPException(status_code=400, detail="Please enter a topic.")
+    if len(topic) > 200:
+        raise HTTPException(status_code=400, detail="Topic is too long (200 characters max).")
+
+    try:
+        questions = llm_service.generate_test(topic)
+    except RuntimeError as e:
+        raise HTTPException(status_code=502, detail=str(e))
+    return {"questions": questions}
