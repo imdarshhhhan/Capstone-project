@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import {
@@ -205,6 +206,10 @@ export default function TeacherPage() {
 
       {data && (
         <>
+          <Link href="/teacher/create-test" className={`${buttonClass} inline-block`}>
+            Create Test
+          </Link>
+
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <StatCard label="Study materials" value={data.stats.materials} />
             <StatCard label="Assignments" value={data.stats.assignments} />

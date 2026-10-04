@@ -121,6 +121,7 @@ export default function AuthCard() {
           fullName: fullName,
           roleSelection: role
         });
+        console.log(uniqueIdToken);
 
         localStorage.setItem("userToken", uniqueIdToken);
         localStorage.setItem("userRole", backendSync.role);

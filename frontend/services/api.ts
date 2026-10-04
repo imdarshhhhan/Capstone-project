@@ -115,3 +115,24 @@ export async function uploadStudyMaterial(
   }
   return response.json();
 }
+
+export interface GeneratedQuestion {
+  question: string;
+  options: string[];
+  answer: string;
+}
+
+export async function createTest(
+  topic: string,
+): Promise<{ questions: GeneratedQuestion[] }> {
+  const response = await fetchBackend(`${BACKEND_URL}/create-test`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ topic }),
+  });
+
+  if (!response.ok) {
+    await throwApiError(response, "Could not generate the test.");
+  }
+  return response.json();
+}
